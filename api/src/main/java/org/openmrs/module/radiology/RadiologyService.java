@@ -67,7 +67,8 @@ public interface RadiologyService extends OpenmrsService {
 	 * @throws IllegalArgumentException if radiologyOrder orderId is null
 	 * @throws IllegalArgumentException if radiologyOrder is not active
 	 * @throws IllegalArgumentException if provider is null
-	 * @should create discontinuation order which discontinues given radiology order that is not in progress or completed
+	 * @should create discontinuation order which discontinues given radiology order that is not in
+	 *         progress or completed
 	 * @should throw illegal argument exception given empty radiology order
 	 * @should throw illegal argument exception given radiology order with orderId null
 	 * @should throw illegal argument exception if radiology order is not active
@@ -291,7 +292,8 @@ public interface RadiologyService extends OpenmrsService {
 	 * Convenience method to check if a RadiologyOrder has a claimed RadiologyReport
 	 *
 	 * @param radiologyOrder RadiologyOrder the radiologyOrder which should be checked
-	 * @return true if RadiologyOrder has a claimed RadiologyReport, otherwise false and also if RadiologyOrder is null
+	 * @return true if RadiologyOrder has a claimed RadiologyReport, otherwise false and also if
+	 *         RadiologyOrder is null
 	 * @should return true if the RadiologyOrder has a claimed RadiologyReport
 	 * @should return false if the RadiologyOrder has no claimed RadiologyReport
 	 * @should return false if the RadiologyOrder is null
@@ -324,4 +326,25 @@ public interface RadiologyService extends OpenmrsService {
 	 */
 	RadiologyReport getActiveRadiologyReportByRadiologyOrder(RadiologyOrder radiologyOrder);
 	
+	/**
+	 * Get a List with all existing RadiologyReports
+	 *
+	 * @return List with all RadiologyReports
+	 * @should return a list with all RadiologyReports
+	 */
+	List<RadiologyReport> getAllRadiologyReports();
+	
+	/**
+	 * Get a List with all exisiting RadiologyReport filtered by the given RadiologyReportStatus
+	 *
+	 * @param radiologyReportStatus RadiologyReportStatus the RadiologyReports should have
+	 * @return List with all RadiologyReport filtered by radiologyReport
+	 * @should return a list with claimed radiologyReports if given radiologyReportStatus is claimed
+	 * @should return a list with discontinued radiologyReports if given radiologyReportStatus is
+	 *         discontinued
+	 * @should return a list with completed radiologyReports if given radiologyReportStatus is
+	 *         completed
+	 * @should throw an illegalArgumentException if given radiologyReportStatus is null
+	 */
+	List<RadiologyReport> getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus radiologyReportStatus);
 }

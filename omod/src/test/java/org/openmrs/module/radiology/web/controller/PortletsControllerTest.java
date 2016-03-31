@@ -14,6 +14,7 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +37,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.radiology.RadiologyOrder;
 import org.openmrs.module.radiology.RadiologyService;
 import org.openmrs.module.radiology.Study;
+import org.openmrs.module.radiology.report.RadiologyReport;
+import org.openmrs.module.radiology.report.RadiologyReportStatus;
 import org.openmrs.module.radiology.test.RadiologyTestData;
 import org.openmrs.test.BaseContextMockTest;
 import org.springframework.beans.TypeMismatchException;
@@ -198,7 +201,8 @@ public class PortletsControllerTest extends BaseContextMockTest {
 	
 	/**
 	 * @see PortletsController#filterRadiologyOrdersByDateRange(List<RadiologyOrder>, Date, Date)
-	 * @verifies return list of all orders with start date if start date is null and end date is null
+	 * @verifies return list of all orders with start date if start date is null and end date is
+	 *           null
 	 */
 	@Test
 	public void filterRadiologyOrdersByDateRange_shouldReturnListOfOrdersAssociatedWithGivenDateRangeNull() throws Exception {
@@ -221,7 +225,8 @@ public class PortletsControllerTest extends BaseContextMockTest {
 	
 	/**
 	 * @see PortletsController#filterRadiologyOrdersByDateRange(List<RadiologyOrder>, Date, Date)
-	 * @verifies return empty list of orders with given end date and start date before any order has started
+	 * @verifies return empty list of orders with given end date and start date before any order has
+	 *           started
 	 */
 	@Test
 	public void filterRadiologyOrdersByDateRange_shouldReturnListOfOrdersAssociatedWithGivenEndDateAndStartDateBeforeAnyOrderHasStarted()
@@ -245,7 +250,8 @@ public class PortletsControllerTest extends BaseContextMockTest {
 	
 	/**
 	 * @see PortletsController#filterRadiologyOrdersByDateRange(List<RadiologyOrder>, Date, Date)
-	 * @verifies return empty list of orders with given end date and start date after any order has started
+	 * @verifies return empty list of orders with given end date and start date after any order has
+	 *           started
 	 */
 	@Test
 	public void filterRadiologyOrdersByDateRange_shouldReturnListOfOrdersAssociatedWithGivenEndDateAndStartDateAfterAnyOrderHasStarted()
@@ -562,4 +568,87 @@ public class PortletsControllerTest extends BaseContextMockTest {
 		assertThat(RadiologyOrdersForPatientQuery, is(Arrays.asList(mockRadiologyOrder1)));
 	}
 	
+	/**
+	 * @verifies return all reports, when allReports is selected
+	 * @see PortletsController#getRadiologyReports(String)
+	 */
+	@Test
+	public void getRadiologyReports_shouldReturnAllReportsWhenAllReportsIsSelected() throws Exception {
+		
+		List<RadiologyReport> mockRadiologyReportList = new ArrayList<RadiologyReport>();
+		mockRadiologyReportList.add(RadiologyTestData.getMockRadiologyReport1());
+		
+		when(radiologyService.getAllRadiologyReports()).thenReturn(mockRadiologyReportList);
+		
+		ModelAndView modelAndView = portletsController.getRadiologyReports("allReports");
+		
+		assertNotNull(modelAndView);
+		assertThat(modelAndView.getViewName(), is("module/radiology/portlets/reportSearch"));
+		assertThat(modelAndView.getModelMap(), hasKey("reportList"));
+		List<RadiologyReport> radiologyReportList = (List<RadiologyReport>) modelAndView.getModelMap().get("reportList");
+		assertThat(radiologyReportList, is(mockRadiologyReportList));
+	}
+	
+	/**
+	 * @verifies return claimed reports, when claimedReports is selected
+	 * @see PortletsController#getRadiologyReports(String)
+	 */
+	@Test
+	public void getRadiologyReports_shouldReturnClaimedReportsWhenClaimedReportsIsSelected() throws Exception {
+		List<RadiologyReport> mockRadiologyReportList = new ArrayList<RadiologyReport>();
+		mockRadiologyReportList.add(RadiologyTestData.getMockRadiologyReport1());
+		
+		when(radiologyService.getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.CLAIMED)).thenReturn(
+		    mockRadiologyReportList);
+		
+		ModelAndView modelAndView = portletsController.getRadiologyReports("claimedReports");
+		
+		assertNotNull(modelAndView);
+		assertThat(modelAndView.getViewName(), is("module/radiology/portlets/reportSearch"));
+		assertThat(modelAndView.getModelMap(), hasKey("reportList"));
+		List<RadiologyReport> radiologyReportList = (List<RadiologyReport>) modelAndView.getModelMap().get("reportList");
+		assertThat(radiologyReportList, is(mockRadiologyReportList));
+	}
+	
+	/**
+	 * @verifies return completed reports, when completedReports is selected
+	 * @see PortletsController#getRadiologyReports(String)
+	 */
+	@Test
+	public void getRadiologyReports_shouldReturnCompletedReportsWhenCompletedReportsIsSelected() throws Exception {
+		List<RadiologyReport> mockRadiologyReportList = new ArrayList<RadiologyReport>();
+		mockRadiologyReportList.add(RadiologyTestData.getMockRadiologyReport1());
+		
+		when(radiologyService.getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.DISCONTINUED)).thenReturn(
+		    mockRadiologyReportList);
+		
+		ModelAndView modelAndView = portletsController.getRadiologyReports("discontinuedReports");
+		
+		assertNotNull(modelAndView);
+		assertThat(modelAndView.getViewName(), is("module/radiology/portlets/reportSearch"));
+		assertThat(modelAndView.getModelMap(), hasKey("reportList"));
+		List<RadiologyReport> radiologyReportList = (List<RadiologyReport>) modelAndView.getModelMap().get("reportList");
+		assertThat(radiologyReportList, is(mockRadiologyReportList));
+	}
+	
+	/**
+	 * @verifies return discontinued reports, when discontinuedReports is selected
+	 * @see PortletsController#getRadiologyReports(String)
+	 */
+	@Test
+	public void getRadiologyReports_shouldReturnDiscontinuedReportsWhenDiscontinuedReportsIsSelected() throws Exception {
+		List<RadiologyReport> mockRadiologyReportList = new ArrayList<RadiologyReport>();
+		mockRadiologyReportList.add(RadiologyTestData.getMockRadiologyReport1());
+		
+		when(radiologyService.getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.COMPLETED)).thenReturn(
+		    mockRadiologyReportList);
+		
+		ModelAndView modelAndView = portletsController.getRadiologyReports("completedReports");
+		
+		assertNotNull(modelAndView);
+		assertThat(modelAndView.getViewName(), is("module/radiology/portlets/reportSearch"));
+		assertThat(modelAndView.getModelMap(), hasKey("reportList"));
+		List<RadiologyReport> radiologyReportList = (List<RadiologyReport>) modelAndView.getModelMap().get("reportList");
+		assertThat(radiologyReportList, is(mockRadiologyReportList));
+	}
 }

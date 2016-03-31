@@ -81,6 +81,8 @@ public class RadiologyServiceComponentTest extends BaseModuleContextSensitiveTes
 	
 	private static final int TOTAL_NUMBER_OF_RADIOLOGY_ORDERS = 7;
 	
+	private static final int TOTAL_NUMBER_OF_RADIOLOGY_REPORTS = 3;
+	
 	private static final int EXISTING_RADIOLOGY_REPORT_ID = 1;
 	
 	private static final int RADIOLOGY_ORDER_WITH_STUDY_WITHOUT_RADIOLOGY_REPORT = 2005;
@@ -1322,5 +1324,74 @@ public class RadiologyServiceComponentTest extends BaseModuleContextSensitiveTes
 		expectedException.expect(IllegalArgumentException.class);
 		expectedException.expectMessage("radiologyOrder cannot be null");
 		radiologyService.getActiveRadiologyReportByRadiologyOrder(null);
+	}
+	
+	/**
+	 * @verifies return a list with all RadiologyReports
+	 * @see RadiologyService#getAllRadiologyReports()
+	 */
+	@Test
+	public void getAllRadiologyReports_shouldReturnAListWithAllRadiologyReports() throws Exception {
+		List<RadiologyReport> radiologyReportList = radiologyService.getAllRadiologyReports();
+		
+		assertNotNull(radiologyReportList);
+		assertThat(radiologyReportList.size(), is(TOTAL_NUMBER_OF_RADIOLOGY_REPORTS));
+	}
+	
+	/**
+	 * @verifies return a list with claimed radiologyReports if given radiologyReportStatus is
+	 *           claimed
+	 * @see RadiologyService#getRadiologyReportsByRadiologyReportStatus(org.openmrs.module.radiology.report.RadiologyReportStatus)
+	 */
+	@Test
+	public void getRadiologyReportsByRadiologyReportStatus_shouldReturnAListWithClaimedRadiologyReportsIfGivenRadiologyReportStatusIsClaimed()
+	        throws Exception {
+		List<RadiologyReport> radiologyReportList = radiologyService
+		        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.CLAIMED);
+		
+		assertNotNull(radiologyReportList);
+		assertThat(radiologyReportList.size(), is(1));
+	}
+	
+	/**
+	 * @verifies return a list with completed radiologyReports if given radiologyReportStatus is
+	 *           completed
+	 * @see RadiologyService#getRadiologyReportsByRadiologyReportStatus(org.openmrs.module.radiology.report.RadiologyReportStatus)
+	 */
+	@Test
+	public void getRadiologyReportsByRadiologyReportStatus_shouldReturnAListWithCompletedRadiologyReportsIfGivenRadiologyReportStatusIsCompleted()
+	        throws Exception {
+		List<RadiologyReport> radiologyReportList = radiologyService
+		        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.COMPLETED);
+		
+		assertNotNull(radiologyReportList);
+		assertThat(radiologyReportList.size(), is(1));
+	}
+	
+	/**
+	 * @verifies return a list with discontinued radiologyReports if given radiologyReportStatus is
+	 *           discontinued
+	 * @see RadiologyService#getRadiologyReportsByRadiologyReportStatus(org.openmrs.module.radiology.report.RadiologyReportStatus)
+	 */
+	@Test
+	public void getRadiologyReportsByRadiologyReportStatus_shouldReturnAListWithDiscontinuedRadiologyReportsIfGivenRadiologyReportStatusIsDiscontinued()
+	        throws Exception {
+		List<RadiologyReport> radiologyReportList = radiologyService
+		        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.DISCONTINUED);
+		
+		assertNotNull(radiologyReportList);
+		assertThat(radiologyReportList.size(), is(1));
+	}
+	
+	/**
+	 * @verifies throw an illegalArgumentException if given radiologyReportStatus is null
+	 * @see RadiologyService#getRadiologyReportsByRadiologyReportStatus(org.openmrs.module.radiology.report.RadiologyReportStatus)
+	 */
+	@Test
+	public void getRadiologyReportsByRadiologyReportStatus_shouldThrowAnIllegalArgumentExceptionIfGivenRadiologyReportStatusIsNull()
+	        throws Exception {
+		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expectMessage("radiologyReportStatus cannot be null");
+		radiologyService.getRadiologyReportsByRadiologyReportStatus(null);
 	}
 }

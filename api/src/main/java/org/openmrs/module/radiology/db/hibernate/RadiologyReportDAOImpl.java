@@ -99,4 +99,23 @@ public class RadiologyReportDAOImpl implements RadiologyReportDAO {
 		    Restrictions.disjunction().add(Restrictions.eq("reportStatus", RadiologyReportStatus.CLAIMED)).add(
 		        Restrictions.eq("reportStatus", RadiologyReportStatus.COMPLETED))).list().get(0);
 	}
+	
+	/**
+	 * @see org.openmrs.module.radiology.RadiologyService#getAllRadiologyReports()
+	 */
+	@Override
+	public List<RadiologyReport> getAllRadiologyReports() {
+		List<RadiologyReport> radiologyReports = sessionFactory.getCurrentSession().createCriteria(RadiologyReport.class)
+		        .list();
+		return radiologyReports;
+	}
+	
+	/**
+	 * @see org.openmrs.module.radiology.RadiologyService#getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus)
+	 */
+	public List<RadiologyReport> getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus radiologyReportStatus) {
+		List<RadiologyReport> radiologyReports = sessionFactory.getCurrentSession().createCriteria(RadiologyReport.class)
+		        .add(Restrictions.eq("reportStatus", radiologyReportStatus)).list();
+		return radiologyReports;
+	}
 }

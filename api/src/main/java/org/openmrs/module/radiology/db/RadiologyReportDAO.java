@@ -53,4 +53,14 @@ public interface RadiologyReportDAO {
 	 * @see org.openmrs.module.radiology.RadiologyService#getActiveRadiologyReportByRadiologyOrder(RadiologyOrder)
 	 */
 	RadiologyReport getActiveRadiologyReportByRadiologyOrder(RadiologyOrder radiologyOrder);
+	
+	/**
+	 * @see org.openmrs.module.radiology.RadiologyService#getAllRadiologyReports()
+	 */
+	List<RadiologyReport> getAllRadiologyReports();
+	
+	/**
+	 * @see org.openmrs.module.radiology.RadiologyService#getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus)
+	 */
+	List<RadiologyReport> getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus radiologyReportStatus);
 }

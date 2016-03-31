@@ -542,4 +542,21 @@ class RadiologyServiceImpl extends BaseOpenmrsService implements RadiologyServic
 		}
 		return null;
 	}
+	
+	/**
+	 * @see RadiologyService#getAllRadiologyReports()
+	 */
+	public List<RadiologyReport> getAllRadiologyReports() {
+		return radiologyReportDAO.getAllRadiologyReports();
+	}
+	
+	/**
+	 * @see RadiologyService#getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus)
+	 */
+	public List<RadiologyReport> getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus radiologyReportStatus) {
+		if (radiologyReportStatus == null) {
+			throw new IllegalArgumentException("radiologyReportStatus cannot be null");
+		}
+		return radiologyReportDAO.getRadiologyReportsByRadiologyReportStatus(radiologyReportStatus);
+	}
 }

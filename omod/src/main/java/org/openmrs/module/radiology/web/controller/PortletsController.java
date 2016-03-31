@@ -20,6 +20,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.radiology.RadiologyOrder;
 import org.openmrs.module.radiology.RadiologyService;
+import org.openmrs.module.radiology.report.RadiologyReportStatus;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -198,6 +199,36 @@ public class PortletsController {
 		}
 		
 		return mav;
+	}
+	
+	/**
+	 * Get all Reports for given parameters (All, Claimed, Completed, Discontinued)
+	 *
+	 * @param sortType
+	 * @return list of radiology Reports with the correspondening given parameters
+	 * @should return all reports, when allReports is selected
+	 * @should return claimed reports, when claimedReports is selected
+	 * @should return discontinued reports, when discontinuedReports is selected
+	 * @should return completed reports, when completedReports is selected
+	 */
+	
+	@RequestMapping(value = "/module/radiology/portlets/reportSearch.portlet")
+	ModelAndView getRadiologyReports(@RequestParam(value = "selectedReportList", required = false) String sortType) {
+		ModelAndView modelAndView = new ModelAndView("module/radiology/portlets/reportSearch");
+		log.warn("##SortType: " + sortType);
+		if (sortType.equals("allReports")) {
+			modelAndView.addObject("reportList", radiologyService.getAllRadiologyReports());
+		} else if (sortType.equals("claimedReports")) {
+			modelAndView.addObject("reportList", radiologyService
+			        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.CLAIMED));
+		} else if (sortType.equals("discontinuedReports")) {
+			modelAndView.addObject("reportList", radiologyService
+			        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.DISCONTINUED));
+		} else {
+			modelAndView.addObject("reportList", radiologyService
+			        .getRadiologyReportsByRadiologyReportStatus(RadiologyReportStatus.COMPLETED));
+		}
+		return modelAndView;
 	}
 	
 }
